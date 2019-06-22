@@ -36,32 +36,38 @@ module.exports = async function(fastify) {
 		// console.log(inputData);
 		// console.log('login', request.body.username, ':', request.body.password);
 
-		let context = {};
-		for (let param of inputData.params) {
-			context[param.name] = 'TODO';
-		}
-
 		let template = Handlebars.compile(inputData.templateText);
-		let rendered = template(context);
-		console.log(rendered);
+		let sent = [];
 
-		try {
-			let result = await send({
-				user: request.body.username,
-				pass: request.body.password,
-				to: 'test@localhost',
-				subject: inputData.subject,
-				text: rendered
-			});
-			console.log('DEBUG', result);
-		}
-		catch (err) {
-			console.log(err);
-			return reply.code(400);
+		for (let email of inputData.emails) {
+			let context = {};
+			for (let param of email.params) {
+				context[param.name] = param.value;
+			}
+
+			let rendered = template(context);
+			// console.log(rendered);
+
+			try {
+				let result = await send({
+					user: request.body.username,
+					pass: request.body.password,
+					to: email.email,
+					subject: inputData.subject,
+					text: rendered
+				});
+				// console.log('DEBUG', result);
+				sent.push(email.email);
+			}
+			catch (err) {
+				console.log(err);
+				return reply.code(400);
+			}
 		}
 
 		return {
-			success: true
+			success: true,
+			sent,
 		};
 	});
 };

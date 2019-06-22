@@ -26,6 +26,7 @@ const DATA_VERSION = 1;
 })
 export class DashboardComponent implements OnInit {
 	public savedAt: String = '';
+	public sending: Boolean = false;
 	public templateText: String = DEFAULT_TEMPLATE;
 	public subject: String = '';
 	public params: Array<Object> = [
@@ -128,6 +129,7 @@ export class DashboardComponent implements OnInit {
 	async send(loginUser: any, loginPass: any) {
 		let data = this.serialize();
 		try {
+			this.sending = true;
 			let result = await this.api.post(
 				'send',
 				{
@@ -140,5 +142,6 @@ export class DashboardComponent implements OnInit {
 		catch (err) {
 			console.error(err);
 		}
+		this.sending = false;
 	}
 }
