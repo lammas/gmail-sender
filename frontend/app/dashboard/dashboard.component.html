@@ -1,0 +1,161 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm">
+			<small class="form-text text-muted">{{ savedAt }}</small>
+		</div>
+		<div class="col-lg">
+			<button
+				class="btn btn-outline-success float-right"
+				(click)="serialize()">
+				Save
+			</button>
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col col-md">
+			<h3>Template</h3>
+			<div class="form-group">
+				<input
+					#templateSubject
+					type="text"
+					class="form-control"
+					id="templateSubject"
+					placeholder="Subject"
+					[(ngModel)]="subject" />
+			</div>
+			<textarea class="form-control" rows="16" [(ngModel)]="templateText"></textarea>
+		</div>
+		<div class="col col-md">
+			<h3>Parameters</h3>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">Variable</th>
+						<th scope="col">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let param of params; index as i">
+						<td>
+							<input
+								type="text"
+								class="form-control"
+								[(ngModel)]="param.name" />
+						</td>
+						<td>
+							<button
+								class="btn btn-outline-danger float-right"
+								(click)="removeVariable(i)">
+								&times;
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<h4>Add variable</h4>
+			<div class="form-group">
+				<div class="input-group">
+					<input
+						#variableName
+						type="text"
+						class="form-control"
+						id="variableName"
+						placeholder="Variable name">
+					<div class="input-group-append">
+						<button
+							class="btn btn-outline-primary"
+							type="button"
+							(click)="addVariable(variableName)">+</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<br />
+
+	<div class="row">
+		<div class="col col-md">
+			<h3>Emails</h3>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">Email</th>
+						<th scope="col">&nbsp;</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let email of emails; index as i">
+						<td>
+							<span>{{ email.email }}</span>
+							<ul>
+								<li *ngFor="let param of email.params">
+									<small class="form-text text-muted">
+										{{ param.name }}: {{ param.value }}
+									</small>
+								</li>
+							</ul>
+						</td>
+						<td>
+							<button
+								class="btn btn-outline-danger float-right"
+								(click)="removeEmail(i)">
+								&times;
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<br />
+			<h4>Add email</h4>
+			<div class="form-group">
+				<input
+					#email
+					type="email"
+					class="form-control"
+					placeholder="Email" />
+			</div>
+			<div #emailParams>
+				<div class="form-group" *ngFor="let param of params; index as i">
+					<input
+						type="text"
+						class="form-control"
+						name="{{ param.name }}"
+						placeholder="{{ param.name }}" />
+				</div>
+			</div>
+			<div class="form-group">
+				<button
+					class="btn btn-primary"
+					type="button"
+					(click)="addEmail(email, emailParams)">Add</button>
+			</div>
+		</div>
+		<div class="col col-md">
+			<h3>Sending</h3>
+			<small class="form-text text-muted">Gmail app login</small>
+			<br />
+			<div class="form-group">
+				<input
+					#loginUser
+					type="email"
+					class="form-control"
+					id="user"
+					placeholder="Gmail username" />
+			</div>
+			<div class="form-group">
+				<input
+					#loginPass
+					type="password"
+					class="form-control"
+					id="pass"
+					placeholder="Generated app password (not actual Gmail password)" />
+			</div>
+			<div class="form-group">
+				<button class="btn btn-success float-right" (click)="send(loginUser, loginPass)">Send</button>
+			</div>
+		</div>
+	</div>
+</div>

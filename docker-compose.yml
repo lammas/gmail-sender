@@ -1,0 +1,39 @@
+version: '3.1'
+
+services:
+    backend:
+        build:
+            context: .
+            dockerfile: backend.dockerfile
+        command: run dev
+        environment:
+            NODE_ENV: ${NODE_ENV}
+        expose:
+            - 3000
+        volumes:
+            - ./backend:/opt/app/backend
+        restart: unless-stopped
+
+    frontend:
+        image: teracy/angular-cli
+        expose:
+            - 4200
+        entrypoint: "ng"
+        command: "serve --host 0.0.0.0 --port 4200 --public-host http://localhost:9800/"
+        volumes:
+            - ./:/opt/app
+        working_dir: /opt/app
+        depends_on:
+            - backend
+        restart: unless-stopped
+
+    nginx:
+        image: nginx:latest
+        ports:
+            - 9800:80
+        volumes:
+            - ./config/nginx.default.conf:/etc/nginx/conf.d/default.conf
+        depends_on:
+            - backend
+            - frontend
+        restart: unless-stopped
