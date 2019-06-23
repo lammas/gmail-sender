@@ -74,6 +74,7 @@ export class DashboardComponent implements OnInit {
 				name: element.name.trim(),
 				value: element.value.trim(),
 			});
+			element.value = '';
 		}
 
 		let email = inputElement.value.trim();
