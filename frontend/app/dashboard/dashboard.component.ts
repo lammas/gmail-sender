@@ -27,6 +27,9 @@ const DATA_VERSION = 1;
 export class DashboardComponent implements OnInit {
 	public savedAt: String = '';
 	public sending: Boolean = false;
+	public errorMsg: String = '';
+	public sent: Array<string> = [];
+
 	public templateText: String = DEFAULT_TEMPLATE;
 	public subject: String = '';
 	public params: Array<Object> = [
@@ -44,7 +47,7 @@ export class DashboardComponent implements OnInit {
 		this.deserialize();
 
 		let scope = this;
-		this.autosave = interval(5000);
+		this.autosave = interval(1000);
 		this.autosave.subscribe(function() {
 			scope.serialize();
 		});
@@ -128,6 +131,9 @@ export class DashboardComponent implements OnInit {
 	}
 
 	async send(loginUser: any, loginPass: any) {
+		this.errorMsg = '';
+		this.sent.length = 0;
+
 		let data = this.serialize();
 		try {
 			this.sending = true;
@@ -138,11 +144,20 @@ export class DashboardComponent implements OnInit {
 					username: loginUser.value.trim(),
 					password: loginPass.value.trim(),
 				}).toPromise();
-			console.log(result);
+
+			this.sent.length = 0;
+			for (let email of (<any>result).sent) {
+				this.sent.push(email);
+			}
 		}
 		catch (err) {
 			console.error(err);
+			this.errorMsg = err.error;
 		}
 		this.sending = false;
+	}
+
+	canSend(loginUser: any, loginPass: any) {
+		return !this.sending && loginUser.value.length > 0 && loginPass.value.length > 0;
 	}
 }

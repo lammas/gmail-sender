@@ -130,6 +130,7 @@
 				<button
 					class="btn btn-primary"
 					type="button"
+					[disabled]="email.value.length == 0"
 					(click)="addEmail(email, emailParams)">Add</button>
 			</div>
 		</div>
@@ -156,10 +157,23 @@
 			<div class="form-group">
 				<button
 					class="btn btn-success float-right"
-					[disabled]="sending"
+					[disabled]="!canSend(loginUser, loginPass)"
 					(click)="send(loginUser, loginPass)">
 					Send
 				</button>
+			</div>
+			<br />
+			<br />
+			<p>
+				{{ errorMsg }}
+			</p>
+			<div *ngIf="sent.length > 0">
+				<h4>Sent to:</h4>
+				<ul>
+					<li *ngFor="let email of sent">
+						{{ email }}
+					</li>
+				</ul>
 			</div>
 		</div>
 	</div>

@@ -44,9 +44,7 @@ module.exports = async function(fastify) {
 			for (let param of email.params) {
 				context[param.name] = param.value;
 			}
-
 			let rendered = template(context);
-			// console.log(rendered);
 
 			try {
 				let result = await send({
@@ -56,12 +54,11 @@ module.exports = async function(fastify) {
 					subject: inputData.subject,
 					text: rendered
 				});
-				// console.log('DEBUG', result);
 				sent.push(email.email);
 			}
 			catch (err) {
 				console.log(err);
-				return reply.code(400);
+				return reply.code(400).send(err.response);
 			}
 		}
 
