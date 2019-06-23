@@ -38,6 +38,7 @@ module.exports = async function(fastify) {
 
 		let template = Handlebars.compile(inputData.templateText);
 		let sent = [];
+		let failed = [];
 
 		for (let email of inputData.emails) {
 			let context = {};
@@ -58,13 +59,15 @@ module.exports = async function(fastify) {
 			}
 			catch (err) {
 				console.log(err);
-				return reply.code(400).send(err.response);
+				failed.push(email.email);
+				// return reply.code(400).send(err.response);
 			}
 		}
 
 		return {
 			success: true,
 			sent,
+			failed,
 		};
 	});
 };

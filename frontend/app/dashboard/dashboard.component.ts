@@ -29,6 +29,7 @@ export class DashboardComponent implements OnInit {
 	public sending: Boolean = false;
 	public errorMsg: String = '';
 	public sent: Array<string> = [];
+	public failed: Array<string> = [];
 
 	public templateText: String = DEFAULT_TEMPLATE;
 	public subject: String = '';
@@ -55,6 +56,8 @@ export class DashboardComponent implements OnInit {
 
 	addVariable(inputElement: any) {
 		let name = inputElement.value.trim();
+		if (name.length == 0)
+			return;
 		inputElement.value = '';
 		for (let param of this.params) {
 			if ((<any>param).name == name)
@@ -133,6 +136,7 @@ export class DashboardComponent implements OnInit {
 	async send(loginUser: any, loginPass: any) {
 		this.errorMsg = '';
 		this.sent.length = 0;
+		this.failed.length = 0;
 
 		let data = this.serialize();
 		try {
@@ -148,6 +152,11 @@ export class DashboardComponent implements OnInit {
 			this.sent.length = 0;
 			for (let email of (<any>result).sent) {
 				this.sent.push(email);
+			}
+
+			this.failed.length = 0;
+			for (let email of (<any>result).failed) {
+				this.failed.push(email);
 			}
 		}
 		catch (err) {

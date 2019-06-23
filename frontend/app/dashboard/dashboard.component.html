@@ -175,6 +175,14 @@
 					</li>
 				</ul>
 			</div>
+			<div *ngIf="failed.length > 0">
+				<h4>Failed to send:</h4>
+				<ul>
+					<li *ngFor="let email of failed">
+						{{ email }}
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 </div>
