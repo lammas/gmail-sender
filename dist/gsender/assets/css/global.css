@@ -1,3 +1,7 @@
 .custom-backdrop {
 	background-color: #5cb3fd;
 }
+
+#template-text {
+	height: 500px;
+}
