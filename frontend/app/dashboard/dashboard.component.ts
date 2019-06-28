@@ -31,7 +31,6 @@ export class DashboardComponent implements OnInit {
 	public sent: Array<string> = [];
 	public failed: Array<string> = [];
 
-	public templateText: String = DEFAULT_TEMPLATE;
 	public subject: String = '';
 	public params: Array<Object> = [
 		{
@@ -41,10 +40,25 @@ export class DashboardComponent implements OnInit {
 	public emails: Array<Object> = [];
 
 	private autosave: any;
+	private templateTextEditor: any = null;
 
 	constructor(private api: ApiService, private modalService: NgbModal) { }
 
 	async ngOnInit() {
+		this.templateTextEditor = new (<any>window).Quill('#template-text', {
+			modules: {
+				toolbar: [
+					[{ header: [1, 2, false] }],
+					['bold', 'italic', 'underline'],
+					['link', 'code-block']
+				]
+			},
+			placeholder: 'Template text goes here...',
+			theme: 'snow'
+		});
+
+		this.templateTextEditor.setText(DEFAULT_TEMPLATE);
+
 		this.deserialize();
 
 		let scope = this;
@@ -102,7 +116,8 @@ export class DashboardComponent implements OnInit {
 	serialize() {
 		let data = {
 			version: DATA_VERSION,
-			templateText: this.templateText,
+			templateText: this.templateTextEditor.getContents(),
+			templateHTML: this.templateTextEditor.root.innerHTML,
 			subject: this.subject,
 			params: this.params,
 			emails: this.emails,
@@ -120,7 +135,13 @@ export class DashboardComponent implements OnInit {
 			return;
 
 		data = JSON.parse(data);
-		this.templateText = (<any>data).templateText;
+
+		if (typeof((<any>data).templateText) == 'object') {
+			this.templateTextEditor.setContents((<any>data).templateText);
+		}
+		else {
+			this.templateTextEditor.setText((<any>data).templateText);
+		}
 		this.subject = (<any>data).subject;
 		this.params.length = 0;
 		for (let param of (<any>data).params) {

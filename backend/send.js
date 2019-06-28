@@ -33,10 +33,7 @@ module.exports = async function(fastify) {
 		if (!inputData || !request.body.username || !request.body.password)
 			return reply.code(400);
 
-		// console.log(inputData);
-		// console.log('login', request.body.username, ':', request.body.password);
-
-		let template = Handlebars.compile(inputData.templateText);
+		let template = Handlebars.compile(inputData.templateHTML);
 		let sent = [];
 		let failed = [];
 
@@ -53,14 +50,13 @@ module.exports = async function(fastify) {
 					pass: request.body.password,
 					to: email.email,
 					subject: inputData.subject,
-					text: rendered
+					html: rendered
 				});
 				sent.push(email.email);
 			}
 			catch (err) {
 				console.log(err);
 				failed.push(email.email);
-				// return reply.code(400).send(err.response);
 			}
 		}
 
